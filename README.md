@@ -1,7 +1,3 @@
-Here is a comprehensive, contract-level `README.md` file for your project, built from the provided repository files and project description.
-
------
-
 # Legacy Protocol: Your Digital Inheritance, Secured On-Chain
 
 Legacy Protocol is a decentralized application that solves a critical and personal problem in the Web3 world: What happens to your digital assets when you're gone?
