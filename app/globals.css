@@ -1,42 +1,60 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-[#111722] to-[#1a2333] text-gray-200 min-h-screen;
   }
-}
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
+  /* Consistent Header */
+  header {
+    @apply bg-transparent border-b border-gray-800/60;
+  }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  /* Consistent Page Background */
+  .layout-content-container {
+    @apply bg-gray-900/40 border border-gray-800/60 rounded-xl shadow-2xl;
+  }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
+  /* Button Styles */
+  .btn {
+    @apply flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold leading-normal tracking-[0.015em] transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply bg-[#1152d4] text-white hover:bg-[#1f60e0] shadow-lg shadow-[#1152d4]/20;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  .btn-secondary {
+    @apply bg-[#232f48] text-white hover:bg-[#2d3f61];
+  }
+  
+  .btn-success {
+    @apply bg-green-500 text-white hover:bg-green-600;
+  }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700;
+  }
+
+  /* Form Input Styles */
+  .form-input {
+    @apply flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 border border-[#324467] bg-[#192233] placeholder:text-[#92a4c9] p-[15px] text-base font-normal leading-normal transition-all duration-200 ease-in-out;
+    @apply focus:border-[#1152d4] focus:ring-2 focus:ring-[#1152d4]/50;
+  }
+  
+  .form-select {
+    /* The form-input class already covers most of this */
+    @apply form-input; 
+  }
+  
+  /* Link Styles */
+  a {
+    @apply text-[#609dff] hover:text-[#8ab4ff] transition-colors duration-150;
+  }
+  
+  header a {
+     @apply text-white font-medium hover:text-gray-300;
   }
 }

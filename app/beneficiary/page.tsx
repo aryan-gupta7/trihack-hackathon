@@ -1,12 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { useWeb3 } from './context/Web3Context'; // Import useWeb3
+import { useWeb3 } from '../context/Web3Context';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function LandingPage() {
-  // Get the connectWallet function and connection status
-  const { isConnected, account, connectWallet } = useWeb3(); 
-  
+export default function BeneficiaryPortalPage() {
+  const { isConnected, connectWallet, account } = useWeb3();
+  const router = useRouter();
+  const [ownerAddress, setOwnerAddress] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleCheck = async () => {
+    if (!ownerAddress || !/^0x[a-fA-F0-9]{40}$/.test(ownerAddress)) {
+      alert('Please enter a valid Ethereum address');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Check if switch exists and get status
+      router.push(`/beneficiary/check?owner=${encodeURIComponent(ownerAddress)}`);
+    } catch (err) {
+      console.error('Error checking switch:', err);
+      alert('Error checking switch');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       className="relative flex h-auto min-h-screen w-full flex-col bg-[#111722] dark group/design-root overflow-x-hidden"
@@ -34,60 +56,52 @@ export default function LandingPage() {
           <div className="flex flex-1 justify-end gap-8">
             <div className="flex items-center gap-9">
               <a className="text-white text-sm font-medium leading-normal" href="#">
+                Home
+              </a>
+              <a className="text-white text-sm font-medium leading-normal" href="#">
                 How it works
               </a>
               <a className="text-white text-sm font-medium leading-normal" href="#">
                 FAQ
               </a>
-              <a className="text-white text-sm font-medium leading-normal" href="#">
-                Contact
-              </a>
             </div>
-            {/* START: This is the updated section */}
             {isConnected && account ? (
-              <div className="flex min-w-[84px] max-w-[480px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#232f48] text-white text-sm font-bold leading-normal tracking-[0.015em]">
-                <span className="truncate">{`${account.slice(0, 6)}...${account.slice(-4)}`}</span>
+              <div className="flex items-center gap-2">
+                <div className="text-white text-sm">{`${account.slice(0, 6)}...${account.slice(-4)}`}</div>
               </div>
             ) : (
-              // Changed from <Link> to <button> and added onClick
               <button
-                onClick={connectWallet} 
-                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1152d4] text-white text-sm font-bold leading-normal tracking-[0.015em]"
+                onClick={connectWallet}
+                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#232f48] text-white text-sm font-bold leading-normal tracking-[0.015em]"
               >
                 <span className="truncate">Connect Wallet</span>
               </button>
             )}
-            {/* END: This is the updated section */}
           </div>
         </header>
         <div className="px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <h1 className="text-white tracking-light text-[32px] font-bold leading-tight px-4 text-center pb-3 pt-6">
-              Secure Your Digital Legacy. Automatically.
-            </h1>
-            <p className="text-white text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
-              An autonomous inheritance protocol. Designate a beneficiary, secure your assets, and leave a final message. If you go silent, your legacy is passed on. Simple,
-              secure, on-chain.
-            </p>
+          <div className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
+            <h2 className="text-white tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">
+              Check a Legacy Switch
+            </h2>
+            <div className="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
+              <label className="flex flex-col min-w-40 flex-1">
+                <input
+                  placeholder="Enter the Owner's Wallet Address (0x...)"
+                  className="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[#324467] bg-[#192233] focus:border-[#324467] h-14 placeholder:text-[#92a4c9] p-[15px] text-base font-normal leading-normal"
+                  value={ownerAddress}
+                  onChange={(e) => setOwnerAddress(e.target.value)}
+                />
+              </label>
+            </div>
             <div className="flex px-4 py-3 justify-center">
-              {/* START: This is the updated section */}
-              {isConnected ? (
-                <Link
-                  href="/dashboard"
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-[#1152d4] text-white text-base font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span className="truncate">Go to Dashboard</span>
-                </Link>
-              ) : (
-                // Changed from <Link> to <button> and added onClick
-                <button
-                  onClick={connectWallet}
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-[#1152d4] text-white text-base font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span className="truncate">Connect Wallet</span>
-                </button>
-              )}
-              {/* END: This is the updated section */}
+              <button
+                onClick={handleCheck}
+                disabled={loading}
+                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1152d4] text-white text-sm font-bold leading-normal tracking-[0.015em] disabled:opacity-50"
+              >
+                <span className="truncate">{loading ? 'Checking...' : 'Check Status'}</span>
+              </button>
             </div>
           </div>
         </div>

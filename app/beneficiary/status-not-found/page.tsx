@@ -1,12 +1,14 @@
 'use client';
 
-import Link from 'next/link';
-import { useWeb3 } from './context/Web3Context'; // Import useWeb3
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useWeb3 } from '../../context/Web3Context';
 
-export default function LandingPage() {
-  // Get the connectWallet function and connection status
-  const { isConnected, account, connectWallet } = useWeb3(); 
-  
+export default function StatusNotFoundPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { account } = useWeb3();
+  const ownerAddress = searchParams.get('owner');
+
   return (
     <div
       className="relative flex h-auto min-h-screen w-full flex-col bg-[#111722] dark group/design-root overflow-x-hidden"
@@ -34,61 +36,36 @@ export default function LandingPage() {
           <div className="flex flex-1 justify-end gap-8">
             <div className="flex items-center gap-9">
               <a className="text-white text-sm font-medium leading-normal" href="#">
-                How it works
+                Dashboard
+              </a>
+              <a className="text-white text-sm font-medium leading-normal" href="#">
+                Protocol
               </a>
               <a className="text-white text-sm font-medium leading-normal" href="#">
                 FAQ
               </a>
-              <a className="text-white text-sm font-medium leading-normal" href="#">
-                Contact
-              </a>
             </div>
-            {/* START: This is the updated section */}
-            {isConnected && account ? (
-              <div className="flex min-w-[84px] max-w-[480px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#232f48] text-white text-sm font-bold leading-normal tracking-[0.015em]">
-                <span className="truncate">{`${account.slice(0, 6)}...${account.slice(-4)}`}</span>
+            {account && (
+              <div className="flex items-center gap-2">
+                <div className="text-white text-sm">{`${account.slice(0, 6)}...${account.slice(-4)}`}</div>
               </div>
-            ) : (
-              // Changed from <Link> to <button> and added onClick
-              <button
-                onClick={connectWallet} 
-                className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#1152d4] text-white text-sm font-bold leading-normal tracking-[0.015em]"
-              >
-                <span className="truncate">Connect Wallet</span>
-              </button>
             )}
-            {/* END: This is the updated section */}
           </div>
         </header>
         <div className="px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            <h1 className="text-white tracking-light text-[32px] font-bold leading-tight px-4 text-center pb-3 pt-6">
-              Secure Your Digital Legacy. Automatically.
-            </h1>
+          <div className="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
+            <h2 className="text-white tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">
+              This address does not have an active switch, or you are not listed as the beneficiary.
+            </h2>
             <p className="text-white text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
-              An autonomous inheritance protocol. Designate a beneficiary, secure your assets, and leave a final message. If you go silent, your legacy is passed on. Simple,
-              secure, on-chain.
+              Please ensure the owner address is correct and that you are the designated beneficiary. If you believe this is
+              an error, contact support.
             </p>
-            <div className="flex px-4 py-3 justify-center">
-              {/* START: This is the updated section */}
-              {isConnected ? (
-                <Link
-                  href="/dashboard"
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-[#1152d4] text-white text-base font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span className="truncate">Go to Dashboard</span>
-                </Link>
-              ) : (
-                // Changed from <Link> to <button> and added onClick
-                <button
-                  onClick={connectWallet}
-                  className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-[#1152d4] text-white text-base font-bold leading-normal tracking-[0.015em]"
-                >
-                  <span className="truncate">Connect Wallet</span>
-                </button>
-              )}
-              {/* END: This is the updated section */}
-            </div>
+            {ownerAddress && (
+              <div className="px-4 py-2">
+                <p className="text-[#92a4c9] text-sm">Owner Address: {ownerAddress}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
